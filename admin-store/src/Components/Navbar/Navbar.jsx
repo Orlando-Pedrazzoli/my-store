@@ -1,7 +1,7 @@
 import React from 'react';
 import './Navbar.css';
-import navlogo from '../../assets/nav-logo.svg';
-import navprofile from '../../assets/nav-profile.svg';
+import navlogo from '../Assets/nav-logo.svg';
+import navprofile from '../Assets/nav-profile.svg';
 
 function Navbar() {
   return (
