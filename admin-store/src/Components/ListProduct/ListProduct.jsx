@@ -5,17 +5,19 @@ import cross_icon from '../Assets/cross_icon.png';
 const ListProduct = () => {
   const [allproducts, setAllProducts] = useState([]);
 
-  const fetchInfo = () => {
+  const fetchInfo = async () => {
     fetch('http://localhost:4000/allproducts')
       .then(res => res.json())
-      .then(data => setAllProducts(data));
+      .then(data => {
+        setAllProducts(data);
+      });
   };
 
   useEffect(() => {
     fetchInfo();
   }, []);
 
-  const removeProduct = async id => {
+  const remove_product = async id => {
     await fetch('http://localhost:4000/removeproduct', {
       method: 'POST',
       headers: {
@@ -24,6 +26,7 @@ const ListProduct = () => {
       },
       body: JSON.stringify({ id: id }),
     });
+    await fetchInfo();
 
     fetch('http://localhost:4000/allproducts')
       .then(res => res.json())
@@ -31,7 +34,7 @@ const ListProduct = () => {
   };
 
   return (
-    <div className='listproduct'>
+    <div className='list-product'>
       <h1>All Products List</h1>
       <div className='listproduct-format-main'>
         <p>Products</p>
@@ -43,28 +46,29 @@ const ListProduct = () => {
       </div>
       <div className='listproduct-allproducts'>
         <hr />
-        {allproducts.map(e => {
+        {allproducts.map((product, index) => {
           return (
-            <div>
-              <div className='listproduct-format-main listproduct-format'>
-                <img
-                  className='listproduct-product-icon'
-                  src={e.image}
-                  alt=''
-                />
-                <p cartitems-product-title>{e.name}</p>
-                <p>${e.old_price}</p>
-                <p>${e.new_price}</p>
-                <p>{e.category}</p>
-                <img
-                  className='listproduct-remove-icon'
-                  onClick={() => {
-                    removeProduct(e.id);
-                  }}
-                  src={cross_icon}
-                  alt=''
-                />
-              </div>
+            <div
+              key={index}
+              className='listproduct-format-main listproduct-format'
+            >
+              <img
+                className='listproduct-product-icon'
+                src={product.image}
+                alt=''
+              />
+              <p>{product.name}</p>
+              <p>€{product.old_price}</p>
+              <p>€{product.new_price}</p>
+              <p>{product.category}</p>
+              <img
+                className='listproduct-remove-icon'
+                onClick={() => {
+                  remove_product(product.id);
+                }}
+                src={cross_icon}
+                alt=''
+              />
               <hr />
             </div>
           );
