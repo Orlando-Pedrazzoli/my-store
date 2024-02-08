@@ -20,7 +20,7 @@ const Navbar = () => {
     <div className='navbar'>
       <div className='nav-logo'>
         <img src={logo} alt='' />
-        <p>SURF SHOP</p>
+        <p>MY STORE</p>
       </div>
       <img
         onClick={dropdown_toggle}
