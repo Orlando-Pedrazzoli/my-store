@@ -193,7 +193,7 @@ app.post('/login', async (req, res) => {
       res.json({ success: false, errors: 'Wrong Password' });
     }
   } else {
-    res.json({ success: false, errors: 'Wrong Email Id' });
+    res.json({ success: false, errors: 'Wrong Email' });
   }
 });
 
