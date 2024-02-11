@@ -148,11 +148,13 @@ const Users = mongoose.model('Users', {
 
 // CREATING ENDPOINT FOR REGISTERING THE USER
 app.post('/signup', async (req, res) => {
+  console.log('Sign Up');
+  let success = false;
   let check = await Users.findOne({ email: req.body.email });
   if (check) {
     return res.status(400).json({
-      success: false,
-      errors: 'existing user found with same email address',
+      success: success,
+      errors: 'existing user found with this email',
     });
   }
   let cart = {};
@@ -166,18 +168,21 @@ app.post('/signup', async (req, res) => {
     cartData: cart,
   });
   await user.save();
-
   const data = {
     user: {
       id: user.id,
     },
   };
+
   const token = jwt.sign(data, 'secret_ecom');
-  res.json({ success: true, token });
+  success = true;
+  res.json({ success, token });
 });
 
 // CREATING ENDPOINT FOR USER LOGIN
 app.post('/login', async (req, res) => {
+  console.log('Login');
+  let success = false;
   let user = await Users.findOne({ email: req.body.email });
   if (user) {
     const passCompare = req.body.password === user.password;
@@ -187,16 +192,41 @@ app.post('/login', async (req, res) => {
           id: user.id,
         },
       };
+      success = true;
+      console.log(user.id);
       const token = jwt.sign(data, 'secret_ecom');
-      res.json({ success: true, token });
+      res.json({ success, token });
     } else {
-      res.json({ success: false, errors: 'Wrong Password' });
+      return res.status(400).json({
+        success: success,
+        errors: 'please try with correct email/password',
+      });
     }
   } else {
-    res.json({ success: false, errors: 'Wrong Email' });
+    return res.status(400).json({
+      success: success,
+      errors: 'please try with correct email/password',
+    });
   }
 });
 
+//CREATING ENDPOINT FOR NEWCOLLECTION DATA
+app.get('/newcollections', async (req, res) => {
+  let products = await Product.find({});
+  let newcollection = products.slice(1).slice(-8);
+  console.log('New Collections Fetched');
+  res.send(newcollection);
+});
+
+//CREATING ENDPOINT FOR POPULAR IN WOMEN
+app.get('/popularinwomen', async (req, res) => {
+  let products = await Product.find({});
+  let arr = products.splice(0, 4);
+  console.log('Popular In Women');
+  res.send(arr);
+});
+
+//
 app.listen(port, error => {
   if (!error) {
     console.log('Server Running on Port' + port);
