@@ -220,13 +220,63 @@ app.get('/newcollections', async (req, res) => {
 
 //CREATING ENDPOINT FOR POPULAR IN WOMEN
 app.get('/popularinwomen', async (req, res) => {
-  let products = await Product.find({});
-  let arr = products.splice(0, 4);
-  console.log('Popular In Women');
-  res.send(arr);
+  let products = await Product.find({ category: 'women' });
+  let popular_in_women = products.splice(0, 4);
+  console.log('Popular In Women Fetched');
+  res.send(popular_in_women);
 });
 
-//
+//CREATING A MIDDLEWARE TO FETCH USER
+const fetchUser = async (req, res, next) => {
+  const token = req.header('auth-token');
+  if (!token) {
+    res.status(401).send({ errors: 'Please authenticate using a valid token' });
+  }
+  try {
+    const data = jwt.verify(token, 'secret_ecom');
+    req.user = data.user;
+    next();
+  } catch (error) {
+    res.status(401).send({ errors: 'Please authenticate using a valid token' });
+  }
+};
+
+//CREATING ENDPOINT FOR ADDING PRODUCTS IN CARTDATA
+app.post('/addtocart', fetchUser, async (req, res) => {
+  console.log('Add Cart');
+  let userData = await Users.findOne({ _id: req.user.id });
+  if (!userData) {
+    return res.status(404).send('User not found');
+  }
+  userData.cartData[req.body.itemId] += 1;
+  await Users.findOneAndUpdate(
+    { _id: req.user.id },
+    { cartData: userData.cartData }
+  );
+  res.send('Added');
+});
+
+//CREATING ENDPOINT FOR REMOVE PRODUCT FROM CARTDATA
+app.post('/removefromcart', fetchUser, async (req, res) => {
+  console.log('Remove Cart');
+  let userData = await Users.findOne({ _id: req.user.id });
+  if (userData.cartData[req.body.itemId] != 0) {
+    userData.cartData[req.body.itemId] -= 1;
+  }
+  await Users.findOneAndUpdate(
+    { _id: req.user.id },
+    { cartData: userData.cartData }
+  );
+  res.send('Removed');
+});
+
+//CREATING ENDPOINT TO GET CARTDATA
+app.post('/getcart', fetchUser, async (req, res) => {
+  console.log('Get Cart');
+  let userData = await Users.findOne({ _id: req.user.id });
+  res.json(userData.cartData);
+});
+
 app.listen(port, error => {
   if (!error) {
     console.log('Server Running on Port' + port);
