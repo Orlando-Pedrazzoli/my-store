@@ -48,8 +48,6 @@ const ProductDisplay = props => {
             <div>S</div>
             <div>M</div>
             <div>L</div>
-            <div>XL</div>
-            <div>XXl</div>
           </div>
         </div>
         <button

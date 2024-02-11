@@ -15,11 +15,13 @@
   height: 163px;
 }
 .productdisplay-main-img {
-  width: 586px;
-  height: 700px;
+  width: 520px;
+  height: 520px;
+  padding-top: 80px;
+  padding-left: 40px;
 }
 .productdisplay-right {
-  margin: 0px 70px;
+  margin: 0px 90px;
   display: flex;
   flex-direction: column;
 }
