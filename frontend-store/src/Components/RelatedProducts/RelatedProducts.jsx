@@ -1,14 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './RelatedProducts.css';
-import data_product from '../Assets/data';
+
 import Item from '../Item/Item';
+
 const RelatedProducts = () => {
+  const [relatedProducts, setRelatedProducts] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:4000/allproducts') // Fetch all products
+      .then(response => response.json())
+      .then(data => {
+        // Shuffle the array of all products
+        const shuffledProducts = shuffleArray(data);
+        // Set the state with the first 4 shuffled products
+        setRelatedProducts(shuffledProducts.slice(0, 4));
+      });
+  }, []);
+
+  // Function to shuffle an array
+  const shuffleArray = array => {
+    const shuffledArray = [...array];
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArray[i], shuffledArray[j]] = [
+        shuffledArray[j],
+        shuffledArray[i],
+      ];
+    }
+    return shuffledArray;
+  };
+
   return (
-    <div className='relatedproducts'>
-      <h1>Related Products</h1>
+    <div className='popular'>
+      <h1>RELATED PRODUCTS</h1>
       <hr />
-      <div className='relatedproducts-item'>
-        {data_product.map((item, i) => {
+      <div className='popular-item'>
+        {relatedProducts.map((item, i) => {
           return (
             <Item
               key={i}

@@ -236,6 +236,13 @@ app.get('/popularinwomen', async (req, res) => {
   console.log('Popular In Women Fetched');
   res.send(popular_in_women);
 });
+//CREATING ENDPOINT FOR RELATED PRODUCTS
+app.get('/relatedproducts', async (req, res) => {
+  let products = await Product.find({ category: 'women' });
+  let related_products = products.splice(0, 4);
+  console.log('Related Products Fetched');
+  res.send(related_products);
+});
 
 //CREATING A MIDDLEWARE TO FETCH USER
 const fetchUser = async (req, res, next) => {

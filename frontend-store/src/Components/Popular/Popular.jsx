@@ -5,11 +5,31 @@ import Item from '../Item/Item';
 
 const Popular = () => {
   const [popularProducts, setPopularProducts] = useState([]);
+
   useEffect(() => {
-    fetch('http://localhost:4000/popularinwomen')
+    fetch('http://localhost:4000/allproducts') // Fetch all products
       .then(response => response.json())
-      .then(data => setPopularProducts(data));
+      .then(data => {
+        // Shuffle the array of all products
+        const shuffledProducts = shuffleArray(data);
+        // Set the state with the first 4 shuffled products
+        setPopularProducts(shuffledProducts.slice(0, 4));
+      });
   }, []);
+
+  // Function to shuffle an array
+  const shuffleArray = array => {
+    const shuffledArray = [...array];
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArray[i], shuffledArray[j]] = [
+        shuffledArray[j],
+        shuffledArray[i],
+      ];
+    }
+    return shuffledArray;
+  };
+
   return (
     <div className='popular'>
       <h1>MOST POPULAR ACCESSORIES</h1>
