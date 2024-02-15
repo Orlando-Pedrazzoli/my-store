@@ -9,7 +9,9 @@
 .productdisplay-img-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
 .productdisplay-img-list img {
   height: 163px;

@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './CSS/LoginSignup.css';
-import { useState } from 'react';
 
 const LoginSignup = () => {
   const [state, setState] = useState('Login');
@@ -14,21 +13,8 @@ const LoginSignup = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const login = async () => {
-    let dataObj;
-    await fetch('http://localhost:4000/login', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/form-data',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then(resp => resp.json())
-      .then(data => {
-        dataObj = data;
-      });
-    console.log(dataObj);
+  const handleResponse = async response => {
+    const dataObj = await response.json();
     if (dataObj.success) {
       localStorage.setItem('auth-token', dataObj.token);
       window.location.replace('/');
@@ -37,27 +23,28 @@ const LoginSignup = () => {
     }
   };
 
-  const signup = async () => {
-    let dataObj;
-    await fetch('http://localhost:4000/signup', {
+  const login = async () => {
+    const response = await fetch('http://localhost:4000/login', {
       method: 'POST',
       headers: {
         Accept: 'application/form-data',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData),
-    })
-      .then(resp => resp.json())
-      .then(data => {
-        dataObj = data;
-      });
+    });
+    handleResponse(response);
+  };
 
-    if (dataObj.success) {
-      localStorage.setItem('auth-token', dataObj.token);
-      window.location.replace('/');
-    } else {
-      alert(dataObj.errors);
-    }
+  const signup = async () => {
+    const response = await fetch('http://localhost:4000/signup', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/form-data',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+    handleResponse(response);
   };
 
   return (
@@ -126,7 +113,7 @@ const LoginSignup = () => {
 
         <div className='loginsignup-agree'>
           <input type='checkbox' name='' id='' />
-          <p>By continuing, i agree to the terms of use & privacy policy.</p>
+          <p>By continuing, I agree to the terms of use & privacy policy.</p>
         </div>
       </div>
     </div>

@@ -58,8 +58,8 @@ const ListProduct = () => {
                 alt=''
               />
               <p>{product.name}</p>
-              <p>€{product.old_price}</p>
-              <p>€{product.new_price}</p>
+              <p>€{product.old_price.toFixed(2)}</p>
+              <p>€{e.new_price.toFixed(2)}</p>
               <p>{product.category}</p>
               <img
                 className='listproduct-remove-icon'

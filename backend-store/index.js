@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const saltRounds = 10;
 
 app.use(express.json());
 app.use(cors());
@@ -157,6 +159,10 @@ app.post('/signup', async (req, res) => {
       errors: 'existing user found with this email',
     });
   }
+
+  // Hash the password
+  const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+
   let cart = {};
   for (let i = 0; i < 300; i++) {
     cart[i] = 0;
@@ -164,7 +170,8 @@ app.post('/signup', async (req, res) => {
   const user = new Users({
     name: req.body.username,
     email: req.body.email,
-    password: req.body.password,
+    // Store the hashed password
+    password: hashedPassword,
     cartData: cart,
   });
   await user.save();
@@ -185,8 +192,12 @@ app.post('/login', async (req, res) => {
   let success = false;
   let user = await Users.findOne({ email: req.body.email });
   if (user) {
-    const passCompare = req.body.password === user.password;
-    if (passCompare) {
+    // Compare hashed passwords
+    const passwordMatch = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
+    if (passwordMatch) {
       const data = {
         user: {
           id: user.id,
@@ -199,13 +210,13 @@ app.post('/login', async (req, res) => {
     } else {
       return res.status(400).json({
         success: success,
-        errors: 'please try with correct email/password',
+        errors: 'Please try with correct email/password or create an account',
       });
     }
   } else {
     return res.status(400).json({
       success: success,
-      errors: 'please try with correct email/password',
+      errors: 'Please try with correct email/password or create an account',
     });
   }
 });

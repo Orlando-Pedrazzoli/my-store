@@ -14,7 +14,6 @@ const ProductDisplay = props => {
           <img src={product.image} alt='' />
           <img src={product.image} alt='' />
           <img src={product.image} alt='' />
-          <img src={product.image} alt='' />
         </div>
         <div className='productdisplay-img'>
           <img className='productdisplay-main-img' src={product.image} alt='' />
@@ -32,10 +31,10 @@ const ProductDisplay = props => {
         </div>
         <div className='productdisplay-right-prices'>
           <div className='productdisplay-right-price-old'>
-            ${product.old_price}
+            ${product.old_price.toFixed(2)}
           </div>
           <div className='productdisplay-right-price-new'>
-            ${product.new_price}
+            ${product.new_price.toFixed(2)}
           </div>
         </div>
         <div className='productdisplay-right-description'>
